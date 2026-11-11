@@ -1,0 +1,16 @@
+import {build} from 'esbuild';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.dirname(fileURLToPath(import.meta.url));
+const assets={sensor:await readFile(path.join(root,'../Modelos/Sensor_indutivo_M18/sensor_M18_com_suporte.glb')),forma:await readFile(path.join(root,'../Modelos/Forma_90g/forma_90g.glb'))};
+const result=await build({entryPoints:[path.join(root,'src/app.js')],bundle:true,write:false,minify:true,format:'iife',target:['chrome100'],legalComments:'inline'});
+let html=await readFile(path.join(root,'src/index.html'),'utf8');
+const css=await readFile(path.join(root,'src/style.css'),'utf8');
+const data=JSON.stringify(Object.fromEntries(Object.entries(assets).map(([k,v])=>[k,v.toString('base64')])));
+const code=result.outputFiles[0].text.replace(/<\/script/gi,'<\\/script');
+const licenses=await readFile(path.join(root,'node_modules/three/LICENSE'),'utf8');
+html=html.replace('/* INLINE_CSS */',()=>css).replace('<!-- INLINE_APP -->',()=>`<script>window.ASSETS=${data};</script><script>${code}</script><!-- Three.js license\n${licenses}\n-->`);
+await mkdir(path.join(root,'dist'),{recursive:true});
+await writeFile(path.join(root,'dist/Treinamento_sensor_indutivo.html'),html);
+console.log(`HTML offline: ${(Buffer.byteLength(html)/1024/1024).toFixed(2)} MB`);

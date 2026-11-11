@@ -1,0 +1,15 @@
+import {mkdir,writeFile} from 'node:fs/promises';
+import {DEFAULTS,evaluate,previewCycle,layout} from '../src/simulation.js';
+const s={...DEFAULTS,offset:2.4,lift:3,wander:2,gapVariation:2.5};
+const out=new URL('../diagnostico/',import.meta.url);await mkdir(out,{recursive:true});
+let signal=false;const rows=[];for(let n=0;n<=10000;n++){const progress=n/100,r=evaluate({...s,progress},signal);signal=r.signal;rows.push({progress,influence:r.influence,surface:r.surfaceInfluence,side:r.sideCoupling,signal:Number(signal)});}
+const gap=previewCycle(s).find(r=>r.kind==='gap'&&r.id===4);
+const selected=rows.filter(r=>r.progress>=22&&r.progress<=29);
+const low=selected.reduce((a,b)=>a.influence<b.influence?a:b);
+const edges=selected.filter((r,i)=>i&&r.signal!==selected[i-1].signal);
+const x=p=>85+(p-22)/7*960,y=v=>410-v*330;
+const curve=(key,color)=>`<polyline fill="none" stroke="${color}" stroke-width="2.5" points="${selected.map(r=>`${x(r.progress)},${y(r[key])}`).join(' ')}"/>`;
+const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="600" viewBox="0 0 1120 600"><rect width="1120" height="600" fill="#f8fafc"/><g font-family="Arial" fill="#23374b"><text x="40" y="32" font-size="23">Vão 5–6: influência × avanço do ciclo</text><text x="40" y="57" font-size="14">Caso informado · sem atraso temporal · saída calculada em avanço crescente desde T=0</text>${[0,.25,.47,.5,.75,1].map(v=>`<line x1="85" x2="1045" y1="${y(v)}" y2="${y(v)}" stroke="#cbd5e1" stroke-dasharray="4 4"/><text x="35" y="${y(v)+5}" font-size="12">${Math.round(v*100)}%</text>`).join('')}${curve('signal','#b9a0cf')}${curve('side','#c89425')}${curve('surface','#3483bd')}${curve('influence','#087e86')}<line x1="${x(gap.progress)}" x2="${x(gap.progress)}" y1="80" y2="410" stroke="#cf6046" stroke-dasharray="5 4"/><text x="${x(gap.progress)+8}" y="103" font-size="13">Centro do vão</text>${[22,23,24,25,26,27,28,29].map(p=>`<text x="${x(p)-10}" y="437" font-size="12">${p}%</text>`).join('')}<text x="85" y="468" fill="#087e86">Influência total</text><text x="270" y="468" fill="#3483bd">Aba (superfície)</text><text x="460" y="468" fill="#c89425">Parede lateral</text><text x="650" y="468" fill="#9473b5">Saída 0 / 1</text><text x="40" y="508" font-size="15">Centro: ${gap.progress.toFixed(2)}% do ciclo → ${(gap.influence*100).toFixed(2)}% de influência.</text><text x="40" y="534" font-size="15">Mínimo nesta região: ${(low.influence*100).toFixed(2)}% em ${low.progress.toFixed(2)}% do ciclo.</text><text x="40" y="563" font-size="13">Modelo didático: o acoplamento lateral usa distância à parede e a contribuição mais forte, não uma solução eletromagnética.</text><text x="40" y="584" font-size="13">Eixo horizontal por posição: não confundir com tempo, pois o ciclo inclui paradas.</text></g></svg>`;
+await writeFile(new URL('vao-5-6.svg',out),svg);
+await writeFile(new URL('ciclo-completo.csv',out),'progresso_percentual,influencia,aba,parede_lateral,sinal\n'+rows.map(r=>Object.values(r).join(',')).join('\n'));
+console.log(JSON.stringify({gap,minimum:low,edges,cycleLength:layout(s).total},null,2));

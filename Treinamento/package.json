@@ -1,0 +1,14 @@
+{
+  "name": "treinamento-sensor-indutivo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test tests/simulation.test.mjs"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.65.0",
+    "esbuild": "^0.28.2",
+    "three": "^0.187.0"
+  }
+}
