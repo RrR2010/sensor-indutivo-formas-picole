@@ -16,7 +16,7 @@ const viewport=$('viewport'),canvas=$('scene');
 let transition=null;
 let previewKey="",previewRows=[];
 let initialPosition,tipMesh,tipOriginal,damageGroup,damaged=false;
-const lastTip=new THREE.Vector3();
+
 
 function makeBox(w,h,d,x,y,z,material){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y,z);m.receiveShadow=true;m.castShadow=true;scene.add(m);return m;}
 function unpack(base64){const bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0));return bytes.buffer;}
@@ -117,7 +117,6 @@ function setView(which){
   const offsets={detail:[103,89,218],general:[-625,440,880],top:[0,269,.01],side:[228,0,0]};
   if(which==='general')target.set(-25,130,0);
   camera.position.copy(target).add(new THREE.Vector3(...(offsets[which]||offsets.detail)));controls.target.copy(target);controls.update();
-  lastTip.set(p.x,p.y,p.z);
   document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('selected',b.dataset.view===which));
   initialPosition=which;
 }
@@ -130,8 +129,6 @@ function update(dt){
   updatePreview();
   const p=result.pose;
   const currentTip=new THREE.Vector3(p.x,p.y,p.z);
-  if(initialPosition!=='general'){const delta=currentTip.clone().sub(lastTip);camera.position.add(delta);controls.target.add(delta);}
-  lastTip.copy(currentTip);
   damaged=result.collision;
   tipMesh.material.color.copy(damaged?new THREE.Color(0xb16a21):tipOriginal);
   tipMesh.material.roughness=damaged?.95:.45;
@@ -148,13 +145,12 @@ function update(dt){
   spacers.forEach((s,i)=>{s.visible=i===1||Math.abs(state.tilt)<.01;s.position.z=state.alignment;s.position.y=(i===0?213:224)+state.assemblyHeight;const end=p.pivot.x-1;s.position.x=(-262+end)/2;s.scale.x=(end+262)/18;});
   result.forms.forEach((f,i)=>forms[i].position.set(f.dx,f.lift,f.z));
   fieldColor.copy(fieldLow).lerp(fieldHigh,Math.min(1,result.influence/.8));
-  led.material.color.setHex(signal?0xf53b20:0x4a1110);led.material.emissive.setHex(0xff1208);led.material.emissiveIntensity=signal?.7:0;
+  led.material.color.setHex(signal?0xf53b20:0x4a1110);led.material.emissive.setHex(0xff1208);led.material.emissiveIntensity=signal?2.2:0;
   fieldGroup.position.set(p.x,p.y,p.z);fieldGroup.rotation.x=p.angle;fieldGroup.visible=state.field;
   cloud.visible=state.fieldStyle==='cloud';envelope.visible=!cloud.visible;
   const r=state.sensorType==='shielded'?9:17,d=state.sensorType==='shielded'?10:12;
   cloud.material.uniforms.uRadius.value=r;cloud.material.uniforms.uDepth.value=d;cloud.material.uniforms.uColor.value.copy(fieldColor);
   envelope.scale.set(r,d,r);envelope.position.y=-d*.65;envelope.material.uniforms.uColor.value.copy(fieldColor);
-  $('signal').classList.toggle('on',signal);$('signalText').textContent=signal?'Ligado':'Desligado';
   const percent=Math.round(result.influence*100);$('influenceValue').textContent=percent+'%';$('meterFill').style.width=percent+'%';$('meterFill').style.background=signal?'#e76545':'#159d9c';
   let condition='Observe a troca de sinal entre metal e vão.';let cls='';
   if(motion.fault){condition={collision:'Enroscou: a aba atingiu a ponta. Ajuste a regulagem e rearme.', 'missing-gap':'Ciclo bloqueado: o sinal não desligou no vão. Ajuste e rearme.', 'no-detection':'Ciclo bloqueado: não há leitura na parada. Ajuste o alinhamento e rearme.'}[motion.fault];cls='danger';}
@@ -167,7 +163,7 @@ function update(dt){
   $('condition').textContent=condition;$('condition').className=cls;
   const cycleText=transition?'Ajustando cenário…':motion.fault?'Ciclo bloqueado':state.playing?(motion.phase==='dwell'?`Parada · ${fmt(motion.remaining)} s`:'Avançando para a próxima forma'):'Manual · avanço livre';
   $('cycleStatus').textContent=cycleText;$('cycleStatus').classList.toggle('blocked',!!motion.fault);
-  $('modeText').textContent=cycleText;$('rearm').hidden=!motion.fault;
+  $('rearm').hidden=!motion.fault;
   $('clearance').textContent=Number.isFinite(result.minDistance)?`${fmt(result.minDistance)} mm até o metal alcançado pelas amostras do campo. ${result.collision?'Há interferência com a ponta.':''}`:'Nenhum metal alcançado pelas amostras do campo nesta posição.';
   if(wasPlaying){historyAccumulator+=dt;while(historyAccumulator>=.06){historyAccumulator-=.06;pushHistory();}}
 }
@@ -209,7 +205,7 @@ function syncUI(){
   for(const [key,value] of Object.entries(state)){const el=$(key);if(!el)continue;if(el.type==='checkbox')el.checked=value;else el.value=value;}
   for(const key of ['height','assemblyHeight','offset','alignment','lift','wander','gap','gapVariation'])$(key+'Value').textContent=(['wander','gapVariation'].includes(key)?'±':'')+fmt(state[key])+' mm';
   const effectiveHeight=sensorPose(state).y-155;$('height').value=effectiveHeight;$('heightValue').textContent=fmt(effectiveHeight)+' mm';
-  $('transparent').setAttribute('aria-pressed',String(state.transparent));
+  $('transparent').checked=state.transparent;
   $('dwellValue').textContent=fmt(state.dwell)+' s';
   $('tiltValue').textContent=fmt(state.tilt,state.tilt%1?1:0)+'°';$('speedValue').textContent=fmt(state.speed,0)+' mm/s';$('progressValue').textContent=fmt(state.progress)+'%';
   $('typeCaption').textContent=state.sensorType==='shielded'?'Blindado · frontal':'Não blindado · amplo';
@@ -225,7 +221,6 @@ function change(key,value){
 }
 for(const key of Object.keys(DEFAULTS)){
   const el=$(key);if(!el)continue;
-  if(key==='transparent')continue;
   el.addEventListener(el.type==='range'?'input':'change',()=>change(key,el.type==='checkbox'?el.checked:el.type==='range'?(key==='height'?69+(Number(el.value)-69-state.assemblyHeight)/Math.cos(state.tilt*Math.PI/180):Number(el.value)):el.value));
 }
 document.querySelectorAll('[data-reset]').forEach(b=>b.addEventListener('click',()=>change(b.dataset.reset,DEFAULTS[b.dataset.reset])));
@@ -251,7 +246,6 @@ function advanceTransition(now){
  if(t===1){Object.assign(state,target);transition=null;motion=createMotion(state);previewKey='';}
  syncUI();
 }
-$('transparent').addEventListener('click',()=>change('transparent',!state.transparent));
 $('panelToggle').addEventListener('click',()=>{const collapsed=document.body.classList.toggle('controls-collapsed');$('panelToggle').setAttribute('aria-expanded',String(!collapsed));});
 for(const card of document.querySelectorAll('.parameter,.toggle-card')){const paragraphs=[...card.querySelectorAll(':scope > p')];if(!paragraphs.length)continue;const button=document.createElement('button');button.className='explain';button.textContent='?';button.setAttribute('aria-label','Explicar '+(card.querySelector('label')?.textContent||'ajuste'));card.append(button);button.addEventListener('click',()=>{$('parameterTitle').textContent=card.querySelector('label')?.childNodes[0]?.textContent?.trim()||'Sobre este ajuste';$('parameterText').textContent=paragraphs.map(p=>p.textContent).join(' ');$('parameterHelp').showModal();});}
 $('closeParameterHelp').addEventListener('click',()=>$('parameterHelp').close());
@@ -259,5 +253,5 @@ $('help').addEventListener('click',()=>$('helpDialog').showModal());$('closeHelp
 $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{ $('condition').textContent='Tela cheia não disponível neste navegador.';}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){state.playing=false;syncUI();}});
 // Read-only diagnostics used by local regression tests; no network connection.
-window.training={isTransitioning:()=>!!transition,getPreview:()=>previewRows.map(r=>({...r})),getState:()=>({...state}),getMotion:()=>({...motion}),getResult:()=>result?JSON.parse(JSON.stringify(result)):null,getReady:()=>ready,getFrames:()=>frames,getSceneInfo:()=>({damaged,cameraTarget:controls?.target.toArray(),forms:forms.length,wallOpacity:wall?.material.opacity,assemblyY:sensorAssembly?.position.y,sensorOpacity:lowerBolt?.material.opacity,wallZ:wall?.position.z,sensorZ:sensorAssembly?.position.z,lowerBoltVisible:lowerBolt?.visible,guardVisible:guardMesh?.visible,drawCalls:renderer?.info.render.calls,camera:camera?.position.toArray()}),sample:(params)=>evaluate({...state,...params},false)};
+window.training={isTransitioning:()=>!!transition,getPreview:()=>previewRows.map(r=>({...r})),getState:()=>({...state}),getMotion:()=>({...motion}),getResult:()=>result?JSON.parse(JSON.stringify(result)):null,getReady:()=>ready,getFrames:()=>frames,getSceneInfo:()=>({damaged,ledEmission:led?.material.emissiveIntensity,cameraTarget:controls?.target.toArray(),forms:forms.length,wallOpacity:wall?.material.opacity,assemblyY:sensorAssembly?.position.y,sensorOpacity:lowerBolt?.material.opacity,wallZ:wall?.position.z,sensorZ:sensorAssembly?.position.z,lowerBoltVisible:lowerBolt?.visible,guardVisible:guardMesh?.visible,drawCalls:renderer?.info.render.calls,camera:camera?.position.toArray()}),sample:(params)=>evaluate({...state,...params},false)};
 init().catch(error=>{console.error(error);$('loading').innerHTML='<strong>Não foi possível iniciar a cena 3D.</strong><small>Abra o arquivo HTML em um navegador com WebGL 2 ativado.</small><small id="errorDetail"></small>';$('errorDetail').textContent=error.message;});

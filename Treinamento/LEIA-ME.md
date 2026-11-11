@@ -73,7 +73,7 @@ O build incorpora os modelos de `../Modelos/Sensor_indutivo_M18/sensor_M18_com_s
 
 Cada forma recebe uma altura própria, praticamente constante na passagem (oscilação residual de até 0,08 mm). O pezinho pode reduzir essa altura quando ela excede a folga disponível.
 
-A câmera orbita o centro da ponta e acompanha sua regulagem. Deslocamentos manuais continuam permitidos; Reset total recentraliza.
+A câmera inicia mirando o centro da ponta, mas não acompanha ajustes ou transições de cenário. Deslocamentos manuais continuam permitidos; Reset total recentraliza.
 
 Ao detectar contato, a ponta fica ocre e recebe riscos no lado de entrada e na face inferior, orientados pela passagem. As marcas são ilustrativas, não alteram a física e desaparecem automaticamente quando não há mais contato.
 
@@ -102,3 +102,5 @@ O seletor oferece os oito cenários definidos para o treinamento, com seus focos
 Painel de ajustes e mapa começam recolhidos. O campo padrão é o envelope animado. Posição sobre a aba varia de −7 a +7 mm, vão de 0 a 4 mm e variação dos vãos de 0 a 10 mm.
 
 No mapa atual, as formas mostram o centro e os vãos mostram o mínimo entre centros vizinhos (amostragem de até 1 mm). A barra, o aviso de contato e o clique correspondem a esse ponto mínimo, não ao centro geométrico do vão. O mapa é atualizado ao expandi-lo e ao alterar parâmetros, depois de terminar a transição.
+
+Os cenários ficam na barra de reprodução, junto de ≪ / Iniciar / ≫ (passos de 1 mm). O status do ciclo e os avisos ficam reunidos. A saída é indicada pelo LED do modelo, com emissão reforçada; o cartão de saída foi removido. Transparência está em Regulagem, junto da proteção do pezinho. A câmera permanece independente dos movimentos do sensor; Reset total restaura o enquadramento inicial.

@@ -65,10 +65,11 @@ assert.ok(changes>=2,'Automatic animation must switch the signal');assert.ok(awa
 await slider('progress',25);assert.equal(await page.evaluate(()=>window.training.getState().playing),false);
 await page.locator('#help').click();assert.ok(await page.locator('#helpDialog').isVisible());await page.locator('#closeHelp').click();
 await page.locator('#resetAll').click();
+const fixedCamera=await page.evaluate(()=>window.training.getSceneInfo().camera);const fixedTarget=await page.evaluate(()=>window.training.getSceneInfo().cameraTarget);
 await page.locator('#scenario').selectOption('1');await page.waitForTimeout(700);
 const mid=await page.evaluate(()=>window.training.getResult().pose.y-155);assert.ok(mid>6&&mid<8.9);
 await page.waitForFunction(()=>!window.training.isTransitioning());assert.ok(Math.abs((await page.evaluate(()=>window.training.getResult().pose.y))-163.9)<1e-6);
-assert.equal(await page.evaluate(()=>window.training.getState().alignment),25);
+assert.equal(await page.evaluate(()=>window.training.getState().alignment),25);assert.deepEqual(await page.evaluate(()=>window.training.getSceneInfo().camera),fixedCamera);assert.deepEqual(await page.evaluate(()=>window.training.getSceneInfo().cameraTarget),fixedTarget);assert.equal(await page.locator('#signal').count(),0);assert.equal(await page.locator('.transport #scenario').count(),1);
 await page.locator('#scenario').selectOption('5');await page.waitForFunction(()=>!window.training.isTransitioning());
 assert.ok(Math.abs((await page.evaluate(()=>window.training.getResult().pose.y))-161)<1e-6);
 assert.equal(await page.evaluate(()=>window.training.getState().tilt),-15.5);
