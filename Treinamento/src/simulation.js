@@ -1,5 +1,5 @@
 // All simulation distances are millimetres. This is a teaching model, not FEM.
-export const DEFAULTS = Object.freeze({progress:0,height:1.5,assemblyHeight:4.5,transparent:false,offset:0,alignment:0,tilt:0,speed:70,dwell:3,lift:0,wander:0,gap:.5,gapVariation:0,guard:true,stopOnFault:true,sensorType:'unshielded',fieldStyle:'envelope',field:true,playing:false});
+export const DEFAULTS = Object.freeze({progress:0,height:1.5,assemblyHeight:4.5,transparent:false,offset:0,alignment:0,tilt:0,speed:70,dwell:1,lift:0,wander:0,gap:.5,gapVariation:0,guard:true,stopOnFault:true,sensorType:'unshielded',fieldStyle:'envelope',field:true,playing:false});
 export const EAR_Y=155, HALF_WIDTH=71.5, NOMINAL=10, ON=.50, OFF=.47;
 const TAU=2*Math.PI;
 export const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
