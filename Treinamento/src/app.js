@@ -236,14 +236,25 @@ $('scenario').addEventListener('change',()=>{
  if($('scenario').value==='custom')return;
  const target=scenarioState(Number($('scenario').value));target.progress=state.progress;
  state.playing=false;motion=createMotion(state);signal=false;
- transition={from:{...state},target,start:performance.now()};syncUI();
+ // Each changed numeric control gets its own two-second animation.
+ const from={...state};
+ const keys=Object.keys(DEFAULTS).filter(key=>key!=='progress'&&key!=='playing'&&
+   typeof from[key]==='number'&&typeof target[key]==='number'&&Math.abs(from[key]-target[key])>1e-9);
+ transition={from,target,keys,start:performance.now()};syncUI();
 });
 function advanceTransition(now){
  if(!transition)return;
- const {from,target,start}=transition,t=Math.min(1,(now-start)/3000),u=t*t*(3-2*t);
- for(const key of Object.keys(DEFAULTS))state[key]=typeof target[key]==='number'?from[key]+(target[key]-from[key])*u:target[key];
+ const {from,target,keys,start}=transition;
+ const elapsed=Math.max(0,(now-start)/2000),completed=Math.min(keys.length,Math.floor(elapsed));
+ Object.assign(state,from);
+ // Finish preceding controls; interpolate only the current one.
+ for(let i=0;i<completed;i++)state[keys[i]]=target[keys[i]];
+ if(completed<keys.length){
+   const t=Math.min(1,elapsed-completed),u=t*t*(3-2*t),key=keys[completed];
+   state[key]=from[key]+(target[key]-from[key])*u;
+ }
  state.playing=false;
- if(t===1){Object.assign(state,target);transition=null;motion=createMotion(state);previewKey='';}
+ if(elapsed>=keys.length){Object.assign(state,target);transition=null;motion=createMotion(state);previewKey='';}
  syncUI();
 }
 $('panelToggle').addEventListener('click',()=>{const collapsed=document.body.classList.toggle('controls-collapsed');$('panelToggle').setAttribute('aria-expanded',String(!collapsed));});
