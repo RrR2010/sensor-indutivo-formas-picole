@@ -1,6 +1,6 @@
 import {DEFAULTS} from './simulation.js';
 export const SCENARIOS=[
- {name:'Normal',values:{}},
+ {name:'Normal',values:{alignment:25}},
  {name:'Sensor alto (Forma 6)',effectiveHeight:8.9},
  {name:'Sensor avançado no V',values:{offset:2.4}},
  {name:'Sensor quase avançado no V com variação de altura',effectiveHeight:3.8,values:{offset:1.3}},
