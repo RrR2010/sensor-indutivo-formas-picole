@@ -10,7 +10,7 @@ Validado no Microsoft Edge de desktop, abrindo por `file://` com a rede bloquead
 
 ## Usar a bancada
 
-- **Iniciar/Pausar:** ciclo de avanço e parada de seis formas. Tempo parado de 0 a 15 s (padrão 3 s; zero permite movimento contínuo). A velocidade vai de 5 a 200 mm/s; valores baixos permitem câmera lenta.
+- **Iniciar/Pausar:** ciclo de avanço e parada de seis formas. Tempo parado de 0 a 15 s (padrão 1 s; zero permite movimento contínuo). A velocidade vai de 5 a 200 mm/s; valores baixos permitem câmera lenta.
 
 - **Avanço das formas:** controle manual de um ciclo completo. Mover esse controle pausa a animação. Os botões −1 mm e +1 mm permitem examinar a transição no vão.
 
@@ -97,7 +97,7 @@ Esse comportamento é uma consequência do cálculo didático existente, que usa
 
 ## Cenários e interface atual
 
-O seletor oferece os oito cenários definidos para o treinamento, com seus focos entre parênteses. A seleção pausa a passagem, preserva o avanço atual e interpola os ajustes durante 3 segundos. Selecionar outro cenário durante a transição parte da posição corrente. Alterar um ajuste manualmente cancela a transição. Parâmetros não especificados voltam ao padrão; os cenários 2–8 recebem as variações comuns e alinhamento de 25 mm, exceto o cenário 8 com 55 mm. Alturas são efetivas, inclusive com inclinação.
+O seletor oferece os oito cenários definidos para o treinamento, com seus focos entre parênteses. A seleção pausa a passagem, preserva o avanço atual e anima sequencialmente cada ajuste numérico alterado, durante 2 segundos por controle. Controles já no valor de destino são ignorados. Selecionar outro cenário durante a transição parte da posição corrente. Alterar um ajuste manualmente cancela a transição. Parâmetros não especificados voltam ao padrão; os cenários 2–8 recebem as variações comuns; todos os cenários usam alinhamento de 25 mm, exceto o cenário 8 com 55 mm. Alturas são efetivas, inclusive com inclinação.
 
 Painel de ajustes e mapa começam recolhidos. O campo padrão é o envelope animado. Posição sobre a aba varia de −7 a +7 mm, vão de 0 a 4 mm e variação dos vãos de 0 a 10 mm.
 
