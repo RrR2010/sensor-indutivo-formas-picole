@@ -3,7 +3,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=path.dirname(fileURLToPath(import.meta.url));
-const assets={sensor:await readFile(path.join(root,'../Modelos/Sensor_indutivo_M18/sensor_M18_com_suporte.glb')),forma:await readFile(path.join(root,'../Modelos/Forma_90g/forma_90g.glb'))};
+const assets={sensor:await readFile(path.join(root,'../modelos/sensor-indutivo-m18/sensor_M18_com_suporte.glb')),forma:await readFile(path.join(root,'../modelos/forma-90g/forma_90g.glb'))};
 const result=await build({entryPoints:[path.join(root,'src/app.js')],bundle:true,write:false,minify:true,format:'iife',target:['chrome100'],legalComments:'inline'});
 let html=await readFile(path.join(root,'src/index.html'),'utf8');
 const css=await readFile(path.join(root,'src/style.css'),'utf8');

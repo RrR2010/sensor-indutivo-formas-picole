@@ -8,8 +8,8 @@ import struct
 from mathutils import Matrix, Vector, kdtree
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SOURCE = os.path.join(ROOT, 'Referências', 'Forma 90g', 'Forma 90g.glb')
-OUT = os.path.join(ROOT, 'Modelos', 'Forma_90g')
+SOURCE = os.path.join(ROOT, 'referencias', 'forma-90g', 'Forma 90g.glb')
+OUT = os.path.join(ROOT, 'modelos', 'forma-90g')
 os.makedirs(OUT, exist_ok=True)
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
@@ -71,7 +71,7 @@ for polygon in obj.data.polygons:
 obj.data.set_sharp_from_angle(angle=math.radians(30))
 obj.data.update()
 obj['origem']='Centro da base; abertura para +Z no Blender, +Y no GLB.'
-obj['fonte']='Referências/Forma 90g/Forma 90g.glb'
+obj['fonte']='referencias/forma-90g/Forma 90g.glb'
 obj['limpeza']='Soldagem 0.001 mm; sem decimacao, remesh ou alteracao das abas.'
 obj['dimensoes_mm']=[round(v*1000,3) for v in hi-lo]
 scene=bpy.context.scene

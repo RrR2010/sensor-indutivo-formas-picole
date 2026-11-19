@@ -66,7 +66,7 @@ Referências conceituais: [Baumer — princípio indutivo e histerese](https://w
 
 Para desenvolver: `npm ci`, `npm test`, `npm run build`. Para repetir o teste de navegador: `node tests/browser.mjs` (usa Microsoft Edge instalado no caminho padrão do Windows). Node e npm são necessários apenas para desenvolvimento; não para abrir o HTML entregue.
 
-O build incorpora os modelos de `../Modelos/Sensor_indutivo_M18/sensor_M18_com_suporte.glb` e `../Modelos/Forma_90g/forma_90g.glb`. Ao atualizar os modelos, gere novamente o HTML. Three.js é distribuído sob licença MIT, incluída no próprio HTML.
+O build incorpora os modelos de `../modelos/sensor-indutivo-m18/sensor_M18_com_suporte.glb` e `../modelos/forma-90g/forma_90g.glb`. Ao atualizar os modelos, gere novamente o HTML. Three.js é distribuído sob licença MIT, incluída no próprio HTML.
 
 
 ## Altura por forma, enquadramento e marcas de impacto

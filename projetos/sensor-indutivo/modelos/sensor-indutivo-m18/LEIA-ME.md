@@ -5,12 +5,12 @@ Modelo aproximado para treinamento, baseado nas fotografias e no rascunho de tr�
 - [Modelo Blender](sensor_indutivo_M18.blend)
 - [Modelo para Three.js](sensor_indutivo_M18.glb)
 - [Prévia](sensor_indutivo_M18_preview.png)
-- [Script de geração](../../scripts/criar_sensor.py)
+- [Script de geração](../../ferramentas/criar_sensor.py)
 - [Conjunto completo para Three.js](sensor_M18_com_suporte.glb)
 - [Somente suporte e porcas](suporte_e_porcas.glb)
 - [Prévia do conjunto](sensor_M18_com_suporte_preview.png)
 - [Ângulo oposto](suporte_angulo_oposto.png)
-- [Script do suporte](../../scripts/criar_suporte.py)
+- [Script do suporte](../../ferramentas/criar_suporte.py)
 
 ## Suporte e montagem
 
@@ -39,4 +39,4 @@ function indicarForma(presente) {
 
 A emissão colore a superfície; halo depende do pós-processamento da aplicação. A detecção e a animação serão controladas pela aplicação. O modelo não contém lógica de detecção nem simulação eletromagnética.
 
-Para regenerar, executar Blender em background com `--python scripts/criar_sensor.py` e depois com `--python scripts/criar_suporte.py` a partir da raiz do projeto. O segundo script atualiza a cena Blender e exporta o conjunto e a fixação separada.
+Para regenerar, executar Blender em background com `--python ferramentas/criar_sensor.py` e depois com `--python ferramentas/criar_suporte.py` a partir da raiz deste projeto. O segundo script atualiza a cena Blender e exporta o conjunto e a fixação separada.

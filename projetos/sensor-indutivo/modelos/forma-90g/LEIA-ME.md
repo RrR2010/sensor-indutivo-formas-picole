@@ -1,11 +1,11 @@
 # Forma de 90 g — modelo preparado
 
-Importado do [GLB original](../../Referências/Forma%2090g/Forma%2090g.glb), preservado sem alterações. A geometria veio do CAD; não foi remodelada nem simplificada por decimação.
+Importado do [GLB original](../../referencias/forma-90g/Forma%2090g.glb), preservado sem alterações. A geometria veio do CAD; não foi remodelada nem simplificada por decimação.
 
 - [Cena Blender](forma_90g.blend)
 - [GLB consolidado para Three.js](forma_90g.glb)
 - [Prévia](forma_90g_preview.png)
-- [Script reproduzível](../../scripts/preparar_forma90g.py)
+- [Script reproduzível](../../ferramentas/preparar_forma90g.py)
 
 ## Organização e escala
 
@@ -29,4 +29,4 @@ A forma está em arquivo separado, pronta para ser adicionada à cena do sensor.
 
 Os vértices exportados no GLB podem ser duplicados nos cantos para representar normais e UVs; isso é esperado e não desfaz a limpeza da malha Blender.
 
-Para regenerar, executar Blender headless com `--background --python-exit-code 1 --python scripts/preparar_forma90g.py` a partir da raiz do projeto.
+Para regenerar, executar Blender headless com `--background --python-exit-code 1 --python ferramentas/preparar_forma90g.py` a partir da raiz deste projeto.

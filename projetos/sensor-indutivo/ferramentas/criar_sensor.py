@@ -4,7 +4,7 @@ import os
 from mathutils import Vector
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, 'Modelos', 'Sensor_indutivo_M18')
+OUT = os.path.join(ROOT, 'modelos', 'sensor-indutivo-m18')
 os.makedirs(OUT, exist_ok=True)
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)

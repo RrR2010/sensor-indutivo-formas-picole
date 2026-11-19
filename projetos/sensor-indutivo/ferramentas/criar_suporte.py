@@ -6,7 +6,7 @@ import os
 from mathutils import Vector
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, 'Modelos', 'Sensor_indutivo_M18')
+OUT = os.path.join(ROOT, 'modelos', 'sensor-indutivo-m18')
 bpy.ops.wm.open_mainfile(filepath=os.path.join(OUT, 'sensor_indutivo_M18.blend'))
 for name in ['Fixacao', 'Conjunto_Sensor_M18']:
     obj = bpy.data.objects.get(name)
